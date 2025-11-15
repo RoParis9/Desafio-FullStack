@@ -1,0 +1,26 @@
+{
+  "name": "desafio-fullstack",
+  "version": "1.0.0",
+  "description": "Monorepo com frontend e backend usando npm workspaces",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "build": "npm run build --workspaces",
+    "build:frontend": "npm run build --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "start:frontend": "npm run start --workspace=frontend",
+    "start:backend": "npm run start:prod --workspace=backend",
+    "lint": "npm run lint --workspaces",
+    "lint:frontend": "npm run lint --workspace=frontend",
+    "lint:backend": "npm run lint --workspace=backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
