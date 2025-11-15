@@ -13,34 +13,42 @@ Sistema de gerenciamento de usuários desenvolvido com NestJS (backend) e Next.j
 
 ### Pré-requisitos
 
-- Node.js 23+
 - Docker e Docker Compose
-- npm ou yarn
+- Node.js 23+ (para desenvolvimento local do frontend)
 
-### Backend
+### Usando Docker Compose (Recomendado)
 
-O backend pode ser executado de duas formas:
-
-#### Opção 1: Usando Docker (Recomendado)
+O backend pode ser executado com Docker Compose, que inclui hot reload automático:
 
 ```bash
-cd backend
 docker-compose up
 ```
 
 O backend estará disponível em `http://localhost:3001`
 
-#### Opção 2: Localmente
+**Hot Reload**: Qualquer alteração nos arquivos `backend/src/` será refletida automaticamente sem necessidade de rebuild.
+
+Para executar em background:
 
 ```bash
-cd backend
-npm install
-npm run start:dev
+docker-compose up -d
 ```
 
-Consulte o [README do backend](./backend/README.md) para mais detalhes.
+Para parar os containers:
 
-### Frontend
+```bash
+docker-compose down
+```
+
+Para ver os logs:
+
+```bash
+docker-compose logs -f
+```
+
+### Frontend (Desenvolvimento Local)
+
+O frontend deve ser executado localmente (não está no Docker Compose, pois será deployado na Vercel):
 
 ```bash
 cd frontend
@@ -51,22 +59,28 @@ npm run dev
 
 O frontend estará disponível em `http://localhost:3000`
 
-Consulte o [README do frontend](./frontend/README.md) para mais detalhes.
+**Nota**: O arquivo `.env.local` deve conter:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
 ### Variáveis de Ambiente
 
-#### Backend
+#### Backend (Docker Compose)
 
-Configure as seguintes variáveis no `docker-compose.yml` ou `.env`:
+Configure no `docker-compose.yml`:
 
 - `PORT`: Porta do servidor (padrão: 3001)
-- `FRONTEND_URL`: URL do frontend para CORS
+- `NODE_ENV`: Ambiente de execução (development/production)
+- `FRONTEND_URL`: URL do frontend para CORS (opcional, aceita múltiplas URLs separadas por vírgula)
 
 #### Frontend
 
-Configure no arquivo `.env.local`:
+Configure no arquivo `.env.local` (criar a partir de `env.example`):
 
 - `NEXT_PUBLIC_API_URL`: URL do backend (padrão: http://localhost:3001)
+
+**Para produção (Vercel)**: Configure `NEXT_PUBLIC_API_URL` nas variáveis de ambiente do projeto na Vercel.
 
 ## ✨ Funcionalidades Implementadas
 
@@ -294,13 +308,15 @@ Desafio-FullStack/
 │   │   ├── users/   # Módulo de usuários
 │   │   ├── profiles/# Módulo de perfis
 │   │   └── main.ts  # Entry point
-│   └── README.md    # Documentação do backend
+│   ├── dockerfile    # Dockerfile de produção
+│   └── dockerfile.dev # Dockerfile de desenvolvimento
 ├── frontend/        # Aplicação Next.js
 │   ├── src/
 │   │   ├── app/     # App Router
 │   │   ├── components/
 │   │   └── services/
-│   └── README.md    # Documentação do frontend
+│   └── .env.local   # Variáveis de ambiente (não commitado)
+├── docker-compose.yml # Configuração Docker Compose
 └── README.md        # Este arquivo
 ```
 

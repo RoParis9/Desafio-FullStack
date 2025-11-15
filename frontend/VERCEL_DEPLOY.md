@@ -10,8 +10,10 @@ Configure a variável de ambiente `NEXT_PUBLIC_API_URL` na Vercel:
 2. Vá em **Settings** → **Environment Variables**
 3. Adicione:
    - **Name**: `NEXT_PUBLIC_API_URL`
-   - **Value**: URL do seu backend (ex: `https://api.seudominio.com`)
+   - **Value**: `https://desafio-fullstack-mr4g.onrender.com`
    - **Environment**: Production, Preview, Development (conforme necessário)
+
+**Importante**: Após adicionar a variável, você precisa fazer um novo deploy para que as alterações tenham efeito.
 
 ### 2. Para Desenvolvimento Local
 
