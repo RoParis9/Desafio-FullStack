@@ -14,26 +14,6 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
+      PORT: 3001
     command: npm run start:dev
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: dockerfile.dev
-    container_name: web_frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - ./frontend/package.json:/app/package.json
-      - ./frontend/tsconfig.json:/app/tsconfig.json
-      - ./frontend/next.config.ts:/app/next.config.ts
-      - ./frontend/postcss.config.mjs:/app/postcss.config.mjs
-      - /app/node_modules
-      - /app/.next
-    depends_on:
-      - backend
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:3001
-    command: npm run dev

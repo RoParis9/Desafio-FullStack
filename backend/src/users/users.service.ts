@@ -63,12 +63,19 @@ export class UsersService {
       );
     }
 
+    const existingIds = this.users
+      .filter((u) => !u.deletedAt)
+      .map((u) => parseInt(u.id, 10))
+      .filter((id) => !isNaN(id));
+    const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+    const newId = (maxId + 1).toString();
+
     const newUser: User = {
-      id: Date.now().toString(),
+      id: newId,
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
       email: createUserDto.email,
-      isActive: true,
+      isActive: createUserDto.isActive ?? true,
       profileId: createUserDto.profileId,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -110,7 +117,6 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    // Se estiver atualizando o profileId, verificar se existe
     if (updateUserDto.profileId) {
       try {
         this.profilesService.findOne(updateUserDto.profileId);
@@ -121,7 +127,6 @@ export class UsersService {
       }
     }
 
-    // Se estiver atualizando o email, verificar se já existe em outro usuário
     if (updateUserDto.email) {
       const emailExists = this.users.some(
         (u) => u.email === updateUserDto.email && u.id !== id && !u.deletedAt,

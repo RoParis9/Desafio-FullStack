@@ -7,7 +7,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 describe('UsersService', () => {
   let service: UsersService;
 
-  // Mock do ProfilesService
   const mockProfilesService = {
     findOne: jest.fn(),
   };
@@ -25,7 +24,6 @@ describe('UsersService', () => {
 
     service = module.get<UsersService>(UsersService);
 
-    // Reset dos mocks antes de cada teste
     jest.clearAllMocks();
   });
 
@@ -35,7 +33,6 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should create a new user with isActive as true', () => {
-      // Arrange (preparar)
       const createUserDto: CreateUserDto = {
         firstName: 'Ana',
         lastName: 'Costa',
@@ -43,21 +40,18 @@ describe('UsersService', () => {
         profileId: '1',
       };
 
-      // Mock do ProfilesService.findOne retornando um perfil válido
       mockProfilesService.findOne.mockReturnValue({
         id: '1',
         name: 'Administrador',
       });
 
-      // Act (executar)
       const result = service.create(createUserDto);
 
-      // Assert (verificar)
       expect(result).toBeDefined();
       expect(result.firstName).toBe('Ana');
       expect(result.lastName).toBe('Costa');
       expect(result.email).toBe('ana.costa@example.com');
-      expect(result.isActive).toBe(true); // Sempre true na criação, mesmo que não seja passado no DTO
+      expect(result.isActive).toBe(true);
       expect(result.profileId).toBe('1');
       expect(mockProfilesService.findOne).toHaveBeenCalledWith('1');
     });
@@ -70,7 +64,6 @@ describe('UsersService', () => {
         profileId: '999',
       };
 
-      // Mock do ProfilesService.findOne lançando NotFoundException
       mockProfilesService.findOne.mockImplementation(() => {
         throw new NotFoundException('Profile with ID 999 not found');
       });
@@ -84,8 +77,8 @@ describe('UsersService', () => {
     it('should throw BadRequestException when email already exists', () => {
       const createUserDto: CreateUserDto = {
         firstName: 'João',
-        lastName: 'Silva',
-        email: 'joao.silva@example.com', // Email que já existe nos dados mockados
+        lastName: 'Costa',
+        email: 'joao.costa@example.com',
         profileId: '1',
       };
 
@@ -96,11 +89,9 @@ describe('UsersService', () => {
 
       expect(() => service.create(createUserDto)).toThrow(BadRequestException);
       expect(() => service.create(createUserDto)).toThrow(
-        'User with email joao.silva@example.com already exists',
+        'User with email joao.costa@example.com already exists',
       );
     });
-
-    // TODO: Implemente um teste para verificar se o usuário foi adicionado à lista
   });
 
   describe('findOne', () => {
@@ -127,6 +118,144 @@ describe('UsersService', () => {
     });
   });
 
+  describe('findAll', () => {
+    it('should return all users without deleted ones', () => {
+      mockProfilesService.findOne.mockReturnValue({
+        id: '1',
+        name: 'Administrador',
+      });
+
+      const result = service.findAll();
+
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+      expect(result.every((user) => !user.deletedAt)).toBe(true);
+    });
+
+    it('should populate profile in each user', () => {
+      mockProfilesService.findOne.mockReturnValue({
+        id: '1',
+        name: 'Administrador',
+      });
+
+      const result = service.findAll();
+
+      expect(result.length).toBeGreaterThan(0);
+      result.forEach((user) => {
+        expect(user.profile).toBeDefined();
+      });
+    });
+  });
+
+  describe('findByProfile', () => {
+    it('should return users filtered by profile', () => {
+      mockProfilesService.findOne.mockReturnValue({
+        id: '1',
+        name: 'Administrador',
+      });
+
+      const result = service.findByProfile('1');
+
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      result.forEach((user) => {
+        expect(user.profileId).toBe('1');
+        expect(user.deletedAt).toBeUndefined();
+      });
+    });
+
+    it('should throw NotFoundException when profile does not exist', () => {
+      mockProfilesService.findOne.mockImplementation(() => {
+        throw new NotFoundException('Profile with ID 999 not found');
+      });
+
+      expect(() => service.findByProfile('999')).toThrow(NotFoundException);
+      expect(() => service.findByProfile('999')).toThrow(
+        'Profile with ID 999 not found',
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('should update a user successfully', () => {
+      mockProfilesService.findOne.mockReturnValue({
+        id: '1',
+        name: 'Administrador',
+      });
+
+      const updateDto = {
+        firstName: 'João Atualizado',
+      };
+
+      const result = service.update('1', updateDto);
+
+      expect(result).toBeDefined();
+      expect(result.firstName).toBe('João Atualizado');
+      expect(result.id).toBe('1');
+    });
+
+    it('should validate profileId when updating', () => {
+      mockProfilesService.findOne.mockImplementation(() => {
+        throw new NotFoundException('Profile with ID 999 not found');
+      });
+
+      const updateDto = {
+        profileId: '999',
+      };
+
+      expect(() => service.update('1', updateDto)).toThrow(BadRequestException);
+      expect(() => service.update('1', updateDto)).toThrow(
+        'Profile with ID 999 not found',
+      );
+    });
+
+    it('should validate email uniqueness when updating', () => {
+      mockProfilesService.findOne.mockReturnValue({
+        id: '1',
+        name: 'Administrador',
+      });
+
+      const updateDto = {
+        email: 'maria.santos@example.com',
+      };
+
+      expect(() => service.update('1', updateDto)).toThrow(BadRequestException);
+      expect(() => service.update('1', updateDto)).toThrow(
+        'User with email maria.santos@example.com already exists',
+      );
+    });
+
+    it('should throw NotFoundException when user does not exist', () => {
+      expect(() => service.update('999', { firstName: 'Test' })).toThrow(
+        NotFoundException,
+      );
+      expect(() => service.update('999', { firstName: 'Test' })).toThrow(
+        'User with ID 999 not found',
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should perform soft delete on user', () => {
+      mockProfilesService.findOne.mockReturnValue({
+        id: '1',
+        name: 'Administrador',
+      });
+
+      service.remove('1');
+
+      const allUsers = service.findAll();
+      const deletedUser = allUsers.find((u) => u.id === '1');
+      expect(deletedUser).toBeUndefined();
+    });
+
+    it('should throw NotFoundException when user does not exist', () => {
+      expect(() => service.remove('999')).toThrow(NotFoundException);
+      expect(() => service.remove('999')).toThrow('User with ID 999 not found');
+    });
+  });
+
   describe('setActiveStatus', () => {
     it('should activate a user', () => {
       mockProfilesService.findOne.mockReturnValue({
@@ -134,7 +263,6 @@ describe('UsersService', () => {
         name: 'Moderador',
       });
 
-      // Usuário com id '3' está inativo nos dados mockados
       const result = service.setActiveStatus('3', true);
 
       expect(result.isActive).toBe(true);
@@ -146,7 +274,6 @@ describe('UsersService', () => {
         name: 'Administrador',
       });
 
-      // Usuário com id '1' está ativo nos dados mockados
       const result = service.setActiveStatus('1', false);
 
       expect(result.isActive).toBe(false);
@@ -158,16 +285,4 @@ describe('UsersService', () => {
       );
     });
   });
-
-  // TODO: Implemente testes para os métodos abaixo:
-  // - findAll: deve retornar todos os usuários (sem os deletados)
-  // - findAll: deve popular o profile em cada usuário
-  // - findByProfile: deve retornar usuários filtrados por perfil
-  // - findByProfile: deve lançar NotFoundException quando o perfil não existe
-  // - update: deve atualizar um usuário existente
-  // - update: deve validar se o profileId existe quando atualizado
-  // - update: deve validar se o email é único quando atualizado
-  // - update: deve lançar NotFoundException quando o usuário não existe
-  // - remove: deve fazer soft delete (definir deletedAt)
-  // - remove: deve lançar NotFoundException quando o usuário não existe
 });

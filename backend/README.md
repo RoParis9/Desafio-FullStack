@@ -1,98 +1,201 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend - API NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desenvolvida com NestJS para gerenciamento de usuários e perfis.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Como Rodar com Docker
 
-## Description
+### Pré-requisitos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Docker
+- Docker Compose
 
-## Project setup
+### Executando
+
+1. **Inicie o container:**
 
 ```bash
-$ npm install
+docker-compose up
 ```
 
-## Compile and run the project
+2. **Para executar em background:**
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker-compose up -d
 ```
 
-## Run tests
+3. **Para parar o container:**
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose down
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+4. **Para ver os logs:**
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker-compose logs -f
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Hot Reload
 
-## Resources
+O Docker está configurado com hot reload. Qualquer alteração nos arquivos `src/` será refletida automaticamente sem necessidade de rebuild.
 
-Check out a few resources that may come in handy when working with NestJS:
+### Portas
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **API**: `http://localhost:3001`
 
-## Support
+### Variáveis de Ambiente
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Configure no `docker-compose.yml`:
 
-## Stay in touch
+- `PORT`: Porta do servidor (padrão: 3001)
+- `NODE_ENV`: Ambiente de execução (development/production)
+- `FRONTEND_URL`: URL do frontend para CORS
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🛠️ Como Rodar Localmente
 
-## License
+### Pré-requisitos
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Node.js 23+
+- npm ou yarn
+
+### Instalação
+
+```bash
+npm install
+```
+
+### Executando
+
+```bash
+# Desenvolvimento
+npm run start:dev
+
+# Produção
+npm run build
+npm run start:prod
+```
+
+### Testes
+
+```bash
+# Executar testes
+npm test
+
+# Testes com cobertura
+npm run test:cov
+
+# Testes em modo watch
+npm test -- --watch
+```
+
+### Linting
+
+```bash
+npm run lint
+```
+
+## 📡 Endpoints da API
+
+### Usuários
+
+- `GET /users` - Listar todos os usuários
+- `GET /users/:id` - Buscar usuário por ID
+- `GET /users/profile/:profileId` - Filtrar usuários por perfil
+- `POST /users` - Criar novo usuário
+- `PATCH /users/:id` - Atualizar usuário
+- `DELETE /users/:id` - Deletar usuário (soft delete)
+- `PUT /users/:id/activate` - Ativar usuário
+- `PUT /users/:id/deactivate` - Desativar usuário
+
+### Perfis
+
+- `GET /profiles` - Listar todos os perfis
+- `GET /profiles/:id` - Buscar perfil por ID
+- `POST /profiles` - Criar novo perfil
+- `PATCH /profiles/:id` - Atualizar perfil
+- `DELETE /profiles/:id` - Deletar perfil
+
+## 📦 Estrutura do Projeto
+
+```
+backend/
+├── src/
+│   ├── users/              # Módulo de usuários
+│   │   ├── dto/            # Data Transfer Objects
+│   │   ├── entities/       # Entidades de domínio
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   └── users.module.ts
+│   ├── profiles/           # Módulo de perfis
+│   │   ├── dto/
+│   │   ├── entities/
+│   │   ├── profiles.controller.ts
+│   │   ├── profiles.service.ts
+│   │   └── profiles.module.ts
+│   ├── app.module.ts       # Módulo raiz
+│   └── main.ts             # Entry point
+├── dockerfile.dev          # Dockerfile para desenvolvimento
+├── docker-compose.yml      # Configuração Docker Compose
+└── package.json
+```
+
+## 🔧 Tecnologias
+
+- **NestJS**: Framework Node.js
+- **TypeScript**: Linguagem de programação
+- **class-validator**: Validação de DTOs
+- **class-transformer**: Transformação de objetos
+- **Jest**: Framework de testes
+
+## 📝 Validações
+
+A API utiliza `class-validator` para validação de dados:
+
+- **Email**: Validação de formato de email
+- **Campos obrigatórios**: Nome, sobrenome, email e perfil são obrigatórios
+- **Mensagens personalizadas**: Mensagens de erro em português
+
+## 🔒 CORS
+
+CORS está configurado para permitir requisições de:
+- `http://localhost:3000`
+- `http://localhost:3001`
+- `http://localhost:3002`
+- URL configurada em `FRONTEND_URL`
+
+## 📊 Dados
+
+Atualmente, os dados são armazenados em memória. Os dados mockados incluem:
+
+- **Usuários**: 3 usuários de exemplo
+- **Perfis**: 3 perfis (Administrador, Usuário, Moderador)
+
+IDs são gerados incrementalmente a partir do maior ID existente.
+
+## 🐳 Docker
+
+### Dockerfile de Desenvolvimento
+
+O `dockerfile.dev` está configurado para:
+- Hot reload automático
+- Volume mounting para código fonte
+- Instalação de dependências
+
+### Docker Compose
+
+O `docker-compose.yml` configura:
+- Porta 3001 exposta
+- Volumes para hot reload
+- Variáveis de ambiente
+
+## 🧪 Testes
+
+Testes unitários estão implementados para:
+- `UsersService`: Criação, busca, ativação/desativação
+- `ProfilesService`: Criação e busca
+
+Para adicionar mais testes, consulte os arquivos `*.spec.ts`.
+
+## 📚 Documentação Adicional
+
+Para mais informações sobre o projeto completo, consulte o [README principal](../README.md).

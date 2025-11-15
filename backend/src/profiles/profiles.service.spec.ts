@@ -31,7 +31,27 @@ describe('ProfilesService', () => {
       expect(result.id).toBeDefined();
     });
 
-    // TODO: Implemente um teste para verificar se o perfil foi adicionado à lista
+    it('should add profile to the list', () => {
+      const initialCount = service.findAll().length;
+      const createProfileDto: CreateProfileDto = {
+        name: 'Perfil Teste',
+      };
+
+      service.create(createProfileDto);
+
+      const finalCount = service.findAll().length;
+      expect(finalCount).toBe(initialCount + 1);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all profiles', () => {
+      const result = service.findAll();
+
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+    });
   });
 
   describe('findOne', () => {
@@ -51,10 +71,47 @@ describe('ProfilesService', () => {
     });
   });
 
-  // TODO: Implemente testes para os métodos abaixo:
-  // - findAll: deve retornar todos os perfis
-  // - update: deve atualizar um perfil existente
-  // - update: deve lançar NotFoundException quando o perfil não existe
-  // - remove: deve remover um perfil existente
-  // - remove: deve lançar NotFoundException quando o perfil não existe
+  describe('update', () => {
+    it('should update a profile successfully', () => {
+      const updateDto = {
+        name: 'Administrador Atualizado',
+      };
+
+      const result = service.update('1', updateDto);
+
+      expect(result).toBeDefined();
+      expect(result.name).toBe('Administrador Atualizado');
+      expect(result.id).toBe('1');
+    });
+
+    it('should throw NotFoundException when profile does not exist', () => {
+      const updateDto = {
+        name: 'Test',
+      };
+
+      expect(() => service.update('999', updateDto)).toThrow(NotFoundException);
+      expect(() => service.update('999', updateDto)).toThrow(
+        'Profile with ID 999 not found',
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a profile successfully', () => {
+      const initialCount = service.findAll().length;
+
+      service.remove('1');
+
+      const finalCount = service.findAll().length;
+      expect(finalCount).toBe(initialCount - 1);
+      expect(() => service.findOne('1')).toThrow(NotFoundException);
+    });
+
+    it('should throw NotFoundException when profile does not exist', () => {
+      expect(() => service.remove('999')).toThrow(NotFoundException);
+      expect(() => service.remove('999')).toThrow(
+        'Profile with ID 999 not found',
+      );
+    });
+  });
 });
