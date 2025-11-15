@@ -1,22 +1,39 @@
-version: "3.9"
-
 services:
   backend:
     build:
       context: ./backend
+      dockerfile: dockerfile.dev
     container_name: api_backend
     ports:
       - "3001:3001"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/package.json:/app/package.json
+      - ./backend/tsconfig.json:/app/tsconfig.json
+      - ./backend/nest-cli.json:/app/nest-cli.json
+      - /app/node_modules
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
+    command: npm run start:dev
 
   frontend:
     build:
       context: ./frontend
+      dockerfile: dockerfile.dev
     container_name: web_frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/package.json:/app/package.json
+      - ./frontend/tsconfig.json:/app/tsconfig.json
+      - ./frontend/next.config.ts:/app/next.config.ts
+      - ./frontend/postcss.config.mjs:/app/postcss.config.mjs
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_API_URL: http://backend:3001
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    command: npm run dev
